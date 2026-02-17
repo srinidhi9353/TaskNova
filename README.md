@@ -22,13 +22,13 @@ A full-stack task management application with advanced features including email 
 - 🔔 Internal browser notifications
 - ⏰ Background scheduler
 
-## ️ Tech Stack
+## 🛠️ Tech Stack
 
 - **Frontend**: React, Vite, Tailwind CSS, Framer Motion
 - **Backend**: Node.js, Express, MongoDB, JWT
-- **Deployment**: Vercel (Monorepo)
+- **Deployment**: Render (Backend), Any static hosting (Frontend)
 
-## � Running Locally
+## 🚀 Running Locally
 
 1. **Clone and Install**
    ```bash
@@ -51,18 +51,23 @@ A full-stack task management application with advanced features including email 
    npm run dev
    ```
 
-## 🌐 Deployment (Vercel)
+## 🌐 Deployment
 
-This project is configured as a Monorepo for Vercel.
+### Backend Deployment (Render)
+1. Create a Render account at render.com
+2. Create a new Web Service
+3. Connect your GitHub repository
+4. Set build command: `npm install`
+5. Set start command: `node server.js`
+6. Add environment variables in Render dashboard:
+   - `MONGO_URI`: your MongoDB connection string
+   - `JWT_SECRET`: your JWT secret key
+   - `EMAIL_USER`: your Gmail address
+   - `EMAIL_PASS`: your Gmail App Password
+   - `NODE_ENV`: production
 
-1. Import the repository into Vercel.
-2. Set the Root Directory to `./`.
-3. Configure Environment Variables in Vercel Project Settings:
-   - `MONGO_URI`
-   - `JWT_SECRET`
-   - `NODE_ENV` (set to `production`)
-   - `EMAIL_USER` & `EMAIL_PASS` (for notifications)
-4. Deploy!
+### Frontend Deployment
+The frontend can be deployed to platforms like Netlify, GitHub Pages, or Vercel.
 
 ## 📁 Project Structure
 
