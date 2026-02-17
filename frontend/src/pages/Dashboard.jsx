@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
+import API from '../api';
 import { useAuth } from '../context/AuthContext';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -65,30 +66,24 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                const config = {
-                    headers: {
-                        Authorization: `Bearer ${user.token}`,
-                    },
-                };
-                
-                const response = await axios.get('/api/tasks', config);
-                
+                const response = await API.get('/api/tasks');
+
                 const now = new Date();
                 const tomorrow = new Date();
                 tomorrow.setDate(now.getDate() + 1);
                 tomorrow.setHours(23, 59, 59, 999);
-                
+
                 const dueTomorrowTasks = response.data.filter(task => {
                     const dueDate = new Date(task.dueDate);
                     return dueDate >= now && dueDate <= tomorrow && !task.completed;
                 });
-                
+
                 setNotifications(dueTomorrowTasks);
             } catch (error) {
                 console.error('Error fetching notifications:', error);
             }
         };
-        
+
         if (user && user.token) {
             fetchNotifications();
         }
@@ -97,21 +92,7 @@ const Dashboard = () => {
     // Fetch tasks with filters
     const fetchTasks = async () => {
         try {
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            
-            // Build query parameters
-            const params = new URLSearchParams();
-            if (search) params.append('search', search);
-            if (filters.priority) params.append('priority', filters.priority);
-            if (filters.startDate) params.append('startDate', filters.startDate);
-            if (filters.endDate) params.append('endDate', filters.endDate);
-            if (filters.completed !== '') params.append('completed', filters.completed);
-            
-            const response = await axios.get(`/api/tasks?${params.toString()}`, config);
+            const response = await API.get(`/api/tasks?${params.toString()}`);
             setTasks(response.data);
         } catch (error) {
             toast.error('Failed to fetch tasks');
@@ -130,12 +111,7 @@ const Dashboard = () => {
         if (!newTask.title.trim()) return;
 
         try {
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            const response = await axios.post('/api/tasks', newTask, config);
+            const response = await API.post('/api/tasks', newTask);
             setTasks([response.data, ...tasks]);
             setNewTask({
                 title: '',
@@ -152,12 +128,7 @@ const Dashboard = () => {
     // Delete Task
     const handleDeleteTask = async (id) => {
         try {
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            await axios.delete(`/api/tasks/${id}`, config);
+            await API.delete(`/api/tasks/${id}`);
             setTasks(tasks.filter((task) => task._id !== id));
             toast.success('Task deleted');
         } catch (error) {
@@ -168,12 +139,7 @@ const Dashboard = () => {
     // Update Task
     const handleUpdateTask = async (id, updatedData) => {
         try {
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            const response = await axios.put(`/api/tasks/${id}`, updatedData, config);
+            const response = await API.put(`/api/tasks/${id}`, updatedData);
             setTasks(tasks.map((task) => (task._id === id ? response.data : task)));
             toast.success('Task updated');
         } catch (error) {
@@ -214,7 +180,7 @@ const Dashboard = () => {
             ">
                 {/* LEFT 50% - Logo */}
                 <div className="w-1/2 flex items-center">
-                    <img 
+                    <img
                         src={theme === 'light' ? '/tasknovalight.png' : '/tasknova.png'}
                         alt="TaskNova"
                         className="h-16 object-contain"
@@ -225,7 +191,7 @@ const Dashboard = () => {
                 <div className="w-1/2 flex items-center justify-end gap-8">
                     {/* Notification */}
                     <div className="relative">
-                        <button 
+                        <button
                             onClick={() => setShowNotifications(!showNotifications)}
                             className="relative hover:scale-110 transition"
                         >
@@ -236,7 +202,7 @@ const Dashboard = () => {
                                 </span>
                             )}
                         </button>
-                        
+
                         {/* Notification Dropdown */}
                         {showNotifications && (
                             <motion.div
@@ -249,12 +215,12 @@ const Dashboard = () => {
                                     <h4 className="font-semibold text-gray-900 dark:text-white mb-3">
                                         🔔 Upcoming Tasks
                                     </h4>
-                                    
+
                                     {notifications.length > 0 ? (
                                         <div className="space-y-2 max-h-60 overflow-y-auto">
                                             {notifications.map(task => (
-                                                <div 
-                                                    key={task._id} 
+                                                <div
+                                                    key={task._id}
                                                     className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
                                                 >
                                                     <h5 className="font-medium text-gray-900 dark:text-white">
@@ -296,7 +262,7 @@ const Dashboard = () => {
                     </Link>
 
                     {/* Logout */}
-                    <button 
+                    <button
                         onClick={handleLogout}
                         className="text-red-500 hover:text-red-600 hover:scale-110 transition"
                     >
@@ -304,10 +270,10 @@ const Dashboard = () => {
                     </button>
                 </div>
             </header>
-            
+
             {/* Main content container */}
             <div className="max-w-4xl mx-auto px-4 py-8">
-                
+
                 {/* Dashboard Title Section */}
                 <section className="px-8 mt-6">
                     <h1 className="
@@ -324,196 +290,196 @@ const Dashboard = () => {
                 </section>
 
                 {/* Task Creation & Search */}
-            <div className="grid md:grid-cols-1 gap-6 mb-8">
-                <Card>
-                    <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Create New Task</h2>
-                    <form onSubmit={handleCreateTask} className="space-y-4">
-                        <div>
-                            <Input
-                                label="Task Title"
-                                placeholder="What needs to be done?"
-                                name="title"
-                                value={newTask.title}
-                                onChange={handleNewTaskChange}
-                                required
-                            />
-                        </div>
-                        
-                        <div>
-                            <Input
-                                label="Description"
-                                placeholder="Add a detailed description..."
-                                name="description"
-                                value={newTask.description}
-                                onChange={handleNewTaskChange}
-                                as="textarea"
-                            />
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Priority</label>
-                                <select
-                                    name="priority"
-                                    value={newTask.priority}
-                                    onChange={handleNewTaskChange}
-                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                                >
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                </select>
-                            </div>
-                            
+                <div className="grid md:grid-cols-1 gap-6 mb-8">
+                    <Card>
+                        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Create New Task</h2>
+                        <form onSubmit={handleCreateTask} className="space-y-4">
                             <div>
                                 <Input
-                                    label="Due Date"
-                                    type="date"
-                                    name="dueDate"
-                                    value={newTask.dueDate}
+                                    label="Task Title"
+                                    placeholder="What needs to be done?"
+                                    name="title"
+                                    value={newTask.title}
                                     onChange={handleNewTaskChange}
+                                    required
                                 />
                             </div>
-                        </div>
-                        
-                        <Button type="submit" className="w-full py-4">
-                            <FaPlus className="mr-2" /> Create Task
-                        </Button>
-                    </form>
-                </Card>
-            </div>
 
-            {/* Search & Filters */}
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-                <Card>
-                    <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Search Tasks</h2>
-                    <div className="relative">
-                        <Input
-                            placeholder="Search by title..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                        <FaSearch className="absolute right-4 top-[14px] text-gray-400 dark:text-gray-500" />
-                    </div>
-                </Card>
+                            <div>
+                                <Input
+                                    label="Description"
+                                    placeholder="Add a detailed description..."
+                                    name="description"
+                                    value={newTask.description}
+                                    onChange={handleNewTaskChange}
+                                    as="textarea"
+                                />
+                            </div>
 
-                <Card>
-                    <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Filters</h2>
-                        <button 
-                            onClick={() => setShowFilters(!showFilters)}
-                            className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                        >
-                            <FaFilter /> {showFilters ? 'Hide' : 'Show'}
-                        </button>
-                    </div>
-                    
-                    {showFilters && (
-                        <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="overflow-hidden space-y-3"
-                        >
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Priority</label>
                                     <select
                                         name="priority"
-                                        value={filters.priority}
-                                        onChange={handleFilterChange}
+                                        value={newTask.priority}
+                                        onChange={handleNewTaskChange}
                                         className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                                     >
-                                        <option value="">All Priorities</option>
                                         <option value="low">Low</option>
                                         <option value="medium">Medium</option>
                                         <option value="high">High</option>
                                     </select>
                                 </div>
-                                
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Status</label>
-                                    <select
-                                        name="completed"
-                                        value={filters.completed}
-                                        onChange={handleFilterChange}
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                                    >
-                                        <option value="">All Statuses</option>
-                                        <option value="false">Pending</option>
-                                        <option value="true">Completed</option>
-                                    </select>
-                                </div>
-                                
+
                                 <div>
                                     <Input
-                                        label="Start Date"
+                                        label="Due Date"
                                         type="date"
-                                        name="startDate"
-                                        value={filters.startDate}
-                                        onChange={handleFilterChange}
-                                    />
-                                </div>
-                                
-                                <div>
-                                    <Input
-                                        label="End Date"
-                                        type="date"
-                                        name="endDate"
-                                        value={filters.endDate}
-                                        onChange={handleFilterChange}
+                                        name="dueDate"
+                                        value={newTask.dueDate}
+                                        onChange={handleNewTaskChange}
                                     />
                                 </div>
                             </div>
-                            
-                            <Button 
-                                variant="secondary" 
-                                className="w-full mt-2 py-3"
-                                onClick={() => {
-                                    setFilters({
-                                        priority: '',
-                                        startDate: '',
-                                        endDate: '',
-                                        completed: ''
-                                    });
-                                }}
-                            >
-                                Clear Filters
+
+                            <Button type="submit" className="w-full py-4">
+                                <FaPlus className="mr-2" /> Create Task
                             </Button>
+                        </form>
+                    </Card>
+                </div>
+
+                {/* Search & Filters */}
+                <div className="grid md:grid-cols-2 gap-6 mb-8">
+                    <Card>
+                        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Search Tasks</h2>
+                        <div className="relative">
+                            <Input
+                                placeholder="Search by title..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
+                            <FaSearch className="absolute right-4 top-[14px] text-gray-400 dark:text-gray-500" />
+                        </div>
+                    </Card>
+
+                    <Card>
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Filters</h2>
+                            <button
+                                onClick={() => setShowFilters(!showFilters)}
+                                className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                            >
+                                <FaFilter /> {showFilters ? 'Hide' : 'Show'}
+                            </button>
+                        </div>
+
+                        {showFilters && (
+                            <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="overflow-hidden space-y-3"
+                            >
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Priority</label>
+                                        <select
+                                            name="priority"
+                                            value={filters.priority}
+                                            onChange={handleFilterChange}
+                                            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                                        >
+                                            <option value="">All Priorities</option>
+                                            <option value="low">Low</option>
+                                            <option value="medium">Medium</option>
+                                            <option value="high">High</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Status</label>
+                                        <select
+                                            name="completed"
+                                            value={filters.completed}
+                                            onChange={handleFilterChange}
+                                            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                                        >
+                                            <option value="">All Statuses</option>
+                                            <option value="false">Pending</option>
+                                            <option value="true">Completed</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <Input
+                                            label="Start Date"
+                                            type="date"
+                                            name="startDate"
+                                            value={filters.startDate}
+                                            onChange={handleFilterChange}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Input
+                                            label="End Date"
+                                            type="date"
+                                            name="endDate"
+                                            value={filters.endDate}
+                                            onChange={handleFilterChange}
+                                        />
+                                    </div>
+                                </div>
+
+                                <Button
+                                    variant="secondary"
+                                    className="w-full mt-2 py-3"
+                                    onClick={() => {
+                                        setFilters({
+                                            priority: '',
+                                            startDate: '',
+                                            endDate: '',
+                                            completed: ''
+                                        });
+                                    }}
+                                >
+                                    Clear Filters
+                                </Button>
+                            </motion.div>
+                        )}
+                    </Card>
+                </div>
+
+                {/* Task List */}
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-semibold">Your Tasks</h2>
+                        <span className="text-slate-400">{tasks.length} task{tasks.length !== 1 ? 's' : ''} found</span>
+                    </div>
+                    {tasks.length > 0 ? (
+                        <AnimatePresence>
+                            {tasks.map((task) => (
+                                <TaskItem
+                                    key={task._id}
+                                    task={task}
+                                    onDelete={handleDeleteTask}
+                                    onUpdate={handleUpdateTask}
+                                />
+                            ))}
+                        </AnimatePresence>
+                    ) : (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="text-center py-10 text-slate-500"
+                        >
+                            {loading ? 'Loading tasks...' : 'No tasks found. Create one above!'}
                         </motion.div>
                     )}
-                </Card>
-            </div>
-
-            {/* Task List */}
-            <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-semibold">Your Tasks</h2>
-                    <span className="text-slate-400">{tasks.length} task{tasks.length !== 1 ? 's' : ''} found</span>
                 </div>
-                {tasks.length > 0 ? (
-                    <AnimatePresence>
-                        {tasks.map((task) => (
-                            <TaskItem
-                                key={task._id}
-                                task={task}
-                                onDelete={handleDeleteTask}
-                                onUpdate={handleUpdateTask}
-                            />
-                        ))}
-                    </AnimatePresence>
-                ) : (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="text-center py-10 text-slate-500"
-                    >
-                        {loading ? 'Loading tasks...' : 'No tasks found. Create one above!'}
-                    </motion.div>
-                )}
             </div>
         </div>
-    </div>
     );
 };
 

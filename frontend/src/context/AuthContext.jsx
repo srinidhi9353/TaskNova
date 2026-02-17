@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import API from '../api';
 import { toast } from 'react-toastify';
 
 const AuthContext = createContext();
@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
                     const parsedUser = JSON.parse(storedUser);
                     setUser(parsedUser);
                     // Optionally verify token validity here or rely on interceptors
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${parsedUser.token}`;
                 } catch (error) {
                     console.error("Failed to parse user", error);
                     localStorage.removeItem('user');
@@ -31,11 +30,10 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (userData) => {
         try {
-            const response = await axios.post('/api/auth/register', userData);
+            const response = await API.post('/api/auth/register', userData);
             if (response.data) {
                 localStorage.setItem('user', JSON.stringify(response.data));
                 setUser(response.data);
-                axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
                 toast.success('Registration successful!');
                 return true;
             }
@@ -47,11 +45,10 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (userData) => {
         try {
-            const response = await axios.post('/api/auth/login', userData);
+            const response = await API.post('/api/auth/login', userData);
             if (response.data) {
                 localStorage.setItem('user', JSON.stringify(response.data));
                 setUser(response.data);
-                axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
                 toast.success('Login successful!');
                 return true;
             }
@@ -64,18 +61,12 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('user');
         setUser(null);
-        delete axios.defaults.headers.common['Authorization'];
         toast.info('Logged out');
     };
 
     const updateProfile = async (userData) => {
         try {
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-            const response = await axios.put('/api/auth/profile', userData, config);
+            const response = await API.put('/api/auth/profile', userData);
             if (response.data) {
                 const updatedUser = { ...response.data, token: user.token };
                 localStorage.setItem('user', JSON.stringify(updatedUser));
