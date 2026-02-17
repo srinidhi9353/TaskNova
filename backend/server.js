@@ -19,7 +19,7 @@ startReminderService();
 // Middleware
 app.use(helmet());
 app.use(cors({
-    origin: ["https://tasknova.vercel.app", "http://localhost:5173"],
+    origin: ["https://tasknova.vercel.app", "http://localhost:5173", /^https:\/\/.*\.onrender\.com$/],
     credentials: true
 }));
 app.use(express.json());
