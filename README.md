@@ -305,37 +305,50 @@ npm run build
 
 ## 🚀 Deployment
 
-### Frontend Deployment
-The frontend can be deployed to platforms like Vercel, Netlify, or GitHub Pages.
+### Frontend Deployment (Vercel)
+The frontend can be easily deployed to Vercel with zero configuration.
+
+#### Deploying to Vercel
+1. **Install Vercel CLI**
+   ```bash
+   npm i -g vercel
+   ```
+
+2. **Login to Vercel**
+   ```bash
+   vercel login
+   ```
+
+3. **Navigate to frontend directory**
+   ```bash
+   cd frontend
+   ```
+
+4. **Deploy to Vercel**
+   ```bash
+   vercel --prod
+   ```
+
+5. **Set environment variables in Vercel dashboard**
+   - Go to your project settings in Vercel
+   - Add environment variable: `VITE_API_URL` with your backend URL
+   - Example: `https://your-backend.onrender.com/api` or `https://your-fly-app.fly.dev/api`
 
 ### Backend Deployment
 The backend can be deployed to platforms like Heroku, Render, Railway, or Fly.io.
 
-#### Deploying to Fly.io
-1. **Install Fly CLI**
-   ```bash
-   curl -L https://fly.io/install.sh | sh
-   ```
-
-2. **Login to Fly**
-   ```bash
-   fly auth login
-   ```
-
-3. **Initialize Fly app**
-   ```bash
-   fly launch
-   ```
-
-4. **Deploy the application**
-   ```bash
-   fly deploy
-   ```
-
-5. **Set environment variables**
-   ```bash
-   fly secrets set MONGO_URI=your_mongodb_connection_string JWT_SECRET=your_jwt_secret_key EMAIL_USER=your_email@gmail.com EMAIL_PASS=your_app_password
-   ```
+#### Deploying to Render (Recommended for backend)
+1. **Create a Render account** at render.com
+2. **Create a new Web Service**
+3. **Connect your GitHub repository**
+4. **Set build command**: `npm install`
+5. **Set start command**: `node server.js`
+6. **Add environment variables** in Render dashboard:
+   - `MONGO_URI`: your MongoDB connection string
+   - `JWT_SECRET`: your JWT secret key
+   - `EMAIL_USER`: your Gmail address
+   - `EMAIL_PASS`: your Gmail App Password
+   - `NODE_ENV`: production
 
 ### Production Scaling Notes
 
@@ -346,8 +359,7 @@ For production deployment, consider the following optimizations:
 - **Security**: Implement rate limiting, add more comprehensive input validation, and set up proper logging
 - **Performance**: Add caching mechanisms (Redis), optimize database queries, and implement CDN for static assets
 - **Monitoring**: Set up error tracking and performance monitoring services
-- **Load Balancing**: Configure load balancers for handling high traffic loads
-- **Fly.io Specific**: Use Fly's built-in features like WireGuard VPN for connecting to external services, distributed tracing, and regional scaling.
+- **Vercel Specific**: Use Vercel's built-in features like Edge Functions, Image Optimization, and Analytics
 
 ## 🤝 Contributing
 
