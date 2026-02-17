@@ -54,12 +54,16 @@ A full-stack task management application with advanced features including email 
 ## 🌐 Deployment
 
 ### Backend Deployment (Render)
-1. Create a Render account at render.com
-2. Create a new Web Service
-3. Connect your GitHub repository
-4. Set build command: `npm install`
-5. Set start command: `node server.js`
-6. Add environment variables in Render dashboard:
+1. **Create a Render account** at render.com
+2. **Create a new Web Service**
+3. **Connect your GitHub repository**
+4. **Configure the service:**
+   - **Name**: tasknova-backend
+   - **Runtime**: Node
+   - **Build command**: `npm install`
+   - **Start command**: `node server.js`
+   - **Root directory**: `backend`
+5. **Add environment variables** in Render dashboard:
    - `MONGO_URI`: your MongoDB connection string
    - `JWT_SECRET`: your JWT secret key
    - `EMAIL_USER`: your Gmail address
