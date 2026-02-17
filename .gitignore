@@ -1,0 +1,111 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Build outputs
+/dist
+/build
+/.vite
+/.cache
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment specific files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database
+*.db
+*.db-journal
+
+# Coverage directory used by tools like istanbul
+coverage/
+lib-cov/
+
+# Temporary folders
+tmp/
+temp/
+
+# Nuxt dev build
+.nuxt/
+.output/
+
+# Next.js build output
+.next/
+
+# Nuxt generate output
+dist/
+
+# VuePress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Storage folder for Capacitor
+/storage
+
+# nyc test coverage
+.nyc_output
+
+# Ember server tmp
+/tmp
+.ember-hbs-cache
+
+# Jekyll
+_site
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Docker
+.dockerignore
+!docker-compose.yml
+
+# VS Code
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+
+# WebStorm
+.idea/*
+
+# Database files
+*.sqlite
+*.sqlite3
+
+# Backend specific
+backend/node_modules/
+backend/.env
+
+# Frontend specific
+frontend/node_modules/
+frontend/dist/
