@@ -17,9 +17,11 @@ API.interceptors.request.use(
                 config.headers.Authorization = `Bearer ${parsedUser.token}`;
             }
         }
+        console.log('API Request:', config.method.toUpperCase(), config.url);
         return config;
     },
     (error) => {
+        console.error('API Request Error:', error);
         return Promise.reject(error);
     }
 );
