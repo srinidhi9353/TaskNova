@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gradient-to-br from-indigo-50 via-white to-purple-50 
+          dark:from-gray-900 dark:via-gray-950 dark:to-black 
+          text-gray-900 dark:text-white 
+          font-sans antialiased;
+  min-height: 100vh;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Glass effect for cards */
+.glass {
+  @apply bg-white/80 dark:bg-gray-900/80 
+          backdrop-blur-md 
+          border border-gray-200 dark:border-gray-800 
+          shadow-lg dark:shadow-black/40 
+          rounded-2xl;
+}
+
+.glass-hover {
+  @apply hover:bg-white/90 dark:hover:bg-gray-900/90 
+          transition-all duration-300;
+}
+
+.text-primary {
+  @apply text-indigo-600 dark:text-indigo-400;
+}
+
+.text-secondary {
+  @apply text-purple-600 dark:text-purple-400;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
