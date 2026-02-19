@@ -30,7 +30,9 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (userData) => {
         try {
+            console.log('Registering user:', userData);
             const response = await API.post('/api/auth/register', userData);
+            console.log('Register response:', response);
             if (response.data) {
                 localStorage.setItem('user', JSON.stringify(response.data));
                 setUser(response.data);
@@ -38,6 +40,7 @@ export const AuthProvider = ({ children }) => {
                 return true;
             }
         } catch (error) {
+            console.error('Registration error:', error);
             toast.error(error.response?.data?.message || 'Registration failed');
             return false;
         }
@@ -45,7 +48,9 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (userData) => {
         try {
+            console.log('Logging in user:', userData);
             const response = await API.post('/api/auth/login', userData);
+            console.log('Login response:', response);
             if (response.data) {
                 localStorage.setItem('user', JSON.stringify(response.data));
                 setUser(response.data);
@@ -53,6 +58,7 @@ export const AuthProvider = ({ children }) => {
                 return true;
             }
         } catch (error) {
+            console.error('Login error:', error);
             toast.error(error.response?.data?.message || 'Login failed');
             return false;
         }
